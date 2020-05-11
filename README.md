@@ -49,4 +49,4 @@ userAgent	# 请求头
 
 ## 执行结果
 
-![](img\result.png)
+![](img/result.png)
