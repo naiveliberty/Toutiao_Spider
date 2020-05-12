@@ -7,7 +7,7 @@ var get_sign = function (nonce, url, userAgent) {
         height: 1080
     };
     global.location = {};
-    global.location.href = "url";
+    global.location.href = url;
     global.location.protocol = "https:";
 
     Function(function (t) {
