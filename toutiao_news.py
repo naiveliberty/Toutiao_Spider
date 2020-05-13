@@ -8,11 +8,12 @@ class Toutiao():
     def __init__(self):
         self.index_url = 'https://www.toutiao.com/'
         self.session = requests.Session()
-        self.news_list = ['https://www.toutiao.com/a6824330213816533518/']
+        self.news_list = ['https://www.toutiao.com/a6824330213816533518/',
+                          'https://www.toutiao.com/a6813910751485362696/']
         self.nodejs_server = 'http://127.0.0.1:8000/toutiao'
 
     def get_news_info(self):
-        for url in self.news_list:
+        for index, url in enumerate(self.news_list):
             headers = {
                 'authority': 'www.toutiao.com',
                 'pragma': 'no-cache',
@@ -23,22 +24,25 @@ class Toutiao():
                 'sec-fetch-site': 'same-origin',
                 'sec-fetch-mode': 'navigate',
                 'sec-fetch-dest': 'document',
-                'referer': 'https://www.toutiao.com/a6824330213816533518/',
                 'accept-language': 'zh-CN,zh;q=0.9',
             }
-            # 第一次获取请求在 response 中获取 key为：__ac_nonce 的值，用来生成 __ac_signature
-            res = self.session.get(url=url, headers=headers, verify=False)
-            nonce = res.cookies['__ac_nonce']
-            userAgent = headers['user-agent']
-            params = {
-                'nonce': nonce,
-                'url': url,
-                'userAgent': userAgent
-            }
-            signature = requests.get(self.nodejs_server, params=params).text
-            self.session.cookies['__ac_signature'] = signature
-            res = self.session.get(url=url, headers=headers, verify=False)
-            print(res.text)
+            if index == 0:
+                # 第一次获取请求在 response 中获取 key为：__ac_nonce 的值，用来生成 __ac_signature
+                res = self.session.get(url=url, headers=headers, verify=False)
+                nonce = res.cookies['__ac_nonce']
+                userAgent = headers['user-agent']
+                params = {
+                    'nonce': nonce,
+                    'url': url,
+                    'userAgent': userAgent
+                }
+                signature = requests.get(self.nodejs_server, params=params).text
+                self.session.cookies['__ac_signature'] = signature
+                res = self.session.get(url=url, headers=headers, verify=False)
+                print(res.text)
+            else:
+                res = self.session.get(url=url, headers=headers, verify=False)
+                print(res.text)
 
     def run(self):
         self.get_news_info()
